@@ -1,0 +1,259 @@
+<style lang="less">
+  Page {
+    font-size: 14px;
+  }
+
+  .top {
+    width: 100%;
+    height: 180px;
+    background: #2d8cf0;
+    padding-top: 15px;
+    position: relative;
+  }
+
+  .center {
+    width: 95%;
+    height: 150px;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    border-radius: 5px;
+  }
+
+  .center_top {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: 80px;
+    margin: 0 auto;
+    margin-top: 20rpx;
+    border-bottom: 1px solid #EEEEEE;
+  }
+
+  .center_img {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .center_img image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+
+  .center_img .user_head {
+    width: 100%;
+    height: 100%;
+  }
+
+  .center_info {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10rpx;
+    margin-left: 30px;
+  }
+
+  .center_name {
+    font-size: 20px;
+  }
+
+  .center_phone {
+    color: #BEBEBE;
+  }
+
+  .center_down {
+    display: flex;
+    flex-direction: row;
+    width: 90%;
+    height: 35px;
+    margin: 0 auto;
+    margin-top: 20rpx;
+  }
+
+  .center_rank {
+    width: 30%;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .rank_text {
+    height: 35px;
+    line-height: 35px;
+    margin-left: 10rpx;
+    color: #AAAAAA;
+  }
+
+  .center_rank image {
+    width: 25px;
+    height: 25px;
+  }
+
+  .center_score {
+    width: 30%;
+    height: 35px;
+    display: flex;
+    flex-direction: row;
+  }
+
+  .center_score image {
+    width: 25px;
+    height: 25px;
+  }
+
+  .gif-wave {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
+    mix-blend-mode: screen;
+    height: 100rpx;
+  }
+
+  /* pages/user/user.wxss */
+  .avatar-wrapper {
+    background: #1b82d1;
+    padding: 25px 0;
+  }
+
+  .avatar-wrapper .avatar {
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .avatar-wrapper .avatar image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .avatar-wrapper .text {
+    text-align: center;
+    color: #fff;
+  }
+
+  .listimg image {
+    margin-right: 5px;
+    vertical-align: middle;
+    width: 20px;
+    height: 20px;
+  }
+
+  .content{
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 30rpx;
+  }
+
+  /*分割线样式*/
+  .divLine{
+    background: #EEEEEE;
+    width: 100%;
+    height: 2rpx;
+  }
+
+  .arrows image {
+    vertical-align: middle;
+    width: 15px;
+    height: 15px;
+    margin-left: 500rpx;
+  }
+
+
+</style>
+<template>
+  <view>
+    <view class="top">
+      <view class="center">
+        <view class="center_top">
+          <view class="center_img" @tap="toBaseInfo">
+            <!-- <image src="../../static/info_img.jpg"></image> -->
+            <open-data type="userAvatarUrl" class="user_head"></open-data>
+          </view>
+          <view class="center_info" @tap="toBaseInfo">
+            <view class="center_name"><open-data type="userNickName" class='name'></open-data></view>
+            <!-- <view class="center_phone">phone:{{phone}}</view> -->
+            <view class="center_phone mt-15">最好的公益属于您</view>
+          </view>
+        </view>
+        <view class="center_down space-b">
+          <view class="center_rank align-c" @tap="toNone">
+            <image class="rank_icon" src="{{iconPath}}like-user.png"></image>
+            <text class="rank_text">关注的人</text>
+          </view>
+          <view class="center_score align-c" @tap="toNone">
+            <image class="rank_icon" src="{{iconPath}}shoucang.png"></image>
+            <text class="rank_text">我的收藏</text>
+          </view>
+          <view class="center_score align-c" @tap="toNone">
+            <image class="rank_icon" src="{{iconPath}}my-activity.png"></image>
+            <text class="rank_text">我的动态</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <view class="list-wrapper mt-60">
+      <view class="alllists">
+        <block wx:for="{{menuitems}}" wx:key="menu_for">
+            <view class='content align-c' style="height: 70rpx;">
+              <view class="listimg">
+                <image src="{{item.icon}}"></image>
+              </view>
+              <view class="listtext">{{item.text}}</view>
+              <view class="listicon">{{item.tips}}</view>
+              <view class="arrows">
+                <image src="{{item.arrows}}"></image>
+              </view>
+            </view>
+          <!-- 分割线 -->
+          <view class="divLine"></view>
+        </block>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import common from '../../resource/common/common';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      userInfo: {},
+      iconPath: common.icon_path,
+      menuitems: [
+        { text: '个人资料', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
+        { text: '邀请好友', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
+        { text: '成长积分', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
+        { text: '关于我们', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' }
+      ]
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+
+  }
+</script>

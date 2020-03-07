@@ -1,0 +1,95 @@
+<style lang='less'>
+  .article-num {
+    padding: 15rpx;
+  }
+  .article-num image {
+    width: 30rpx;
+    height: 30rpx;
+  }
+  .article-detail{
+    text-overflow :ellipsis; /*让截断的文字显示为点点。还有一个值是clip意截断不显示点点*/
+    overflow : hidden; /*超出要隐藏*/
+  }
+</style>
+
+<template>
+
+  <view class="pl-20 pr-20 pt-10 pd-10 center;" style="background-color: #F8F9F9;">
+    <view @tap="turnDetail('{{article.id}}')" class="pd-15 column article-item" style="width: 700rpx;border-radius: 15rpx;max-height: 320rpx;background-color: white;">
+      <view class="row align-c">
+        <view class="align-c">
+          <image src="{{iconPath}}octocat.png" style="width: 60rpx;height: 60rpx;"></image>
+        </view>
+        <view class="ml-30 align-c font-35">
+          {{article.title}}
+        </view>
+      </view>
+      <view class="pt-20 font-30 article-detail" style="padding-bottom: 20rpx;color: #ABB2B9;">
+        {{article.detail}}
+      </view>
+      <view class="space-b align-c font-30">
+        <view class="row align-c article-num">
+          <image src="{{iconPath}}shoucang-2.png"></image>
+          <text class="ml-15">{{article.like_num}}</text>
+        </view>
+        <view class="row align-c article-num">
+          <image src="{{iconPath}}share-2.png"></image>
+          <text class="ml-15">{{article.share_num}}</text>
+        </view>
+        <view class="row align-c article-num">
+          <image src="{{iconPath}}evaluate-2.png"></image>
+          <text class="ml-15">{{article.evaluate_num}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+</template>
+
+
+<script>
+  import wepy from 'wepy';
+
+  import common from '../resource/common/common';
+  import methods from '../resource/common/methods';
+  import paths from '../resource/common/paths';
+  import urls from '../resource/common/urls';
+  import request from '../resource/api/request';
+  import api from '../resource/api/api-logined';
+
+
+  export default class List extends wepy.component {
+
+    props = {
+      article: {
+        type: Object,
+        default: {}
+      }
+    };
+
+    data = {
+      iconPath: common.icon_path,
+      ossPath: common.imgs_path
+    };
+
+    methods = {
+      turnDetail(id) {
+        wepy.navigateTo({
+          url: paths.PAGE_INDEX_DETAIL + '?id=' + id
+        });
+      }
+    };
+
+
+    onLoad() {
+
+    }
+
+    onShow() {
+
+    }
+
+
+  }
+</script>
+

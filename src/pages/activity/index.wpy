@@ -1,0 +1,41 @@
+<style lang="less">
+
+</style>
+<template>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '公益活动',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white',
+      enablePullDownRefresh: true
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      userInfo: {}
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+    getUser() {
+
+    }
+  }
+</script>

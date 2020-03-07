@@ -1,0 +1,208 @@
+<style lang="less">
+  page{
+    display: flex;
+    flex-direction: column;
+    background-color: #F8F9F9;
+  }
+  .navbar{
+    flex: none;
+    display: flex;
+    background: #fff;
+  }
+  .navbar .item{
+    position: relative;
+    flex: auto;
+    text-align: center;
+    line-height: 80rpx;
+  }
+  .navbar .item.active{
+    color: #2d8cf0;
+  }
+  .navbar .item.active:after{
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4rpx;
+    background: #2d8cf0;
+  }
+</style>
+<template>
+  <!--导航条-->
+  <view class="">
+    <view class="row space-b" style="position: fixed;width: 755rpx;background-color: #fff;">
+      <view class="center pl-30 pr-30" @tap="turnToSet()">
+        <image src="{{iconPath}}set.png" style="width: 50rpx;height: 50rpx;"></image>
+      </view>
+      <view class="navbar" style="width: 430rpx;">
+        <text wx:for="{{navbar}}" data-idx="{{index}}" class="item {{currentTab==index ? 'active' : ''}}"
+              wx:key="unique" bindtap="navbarTap">{{item}}
+        </text>
+      </view>
+      <view class="center pl-30 pr-30" @tap="turnToSearch()">
+        <image src="{{iconPath}}search.png" style="width: 45rpx;height: 45rpx;"></image>
+      </view>
+    </view>
+  </view>
+
+  <view style="height: 85rpx;"></view>
+
+  <!--首页-->
+  <view hidden="{{currentTab!==0}}">
+    <repeat for="{{articleList}}" item="item" index="index">
+      <article :article.sync="item"></article>
+    </repeat>
+  </view>
+
+  <!--用户列表-->
+  <view hidden="{{currentTab!==1}}">
+
+  </view>
+
+  <view wx:if="{{updateIcon == true}}" class="center pd-50">
+    <image src="{{iconPath}}update.png" style="width: 50rpx;height: 50rpx;"></image>
+  </view>
+
+  <image @tap.stop="turnPublish()" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import pagePath from '../../resource/common/paths';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
+  import article from '../../components/article-list';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'Abana',
+      enablePullDownRefresh: true
+    };
+    components = {
+      article: article
+    };
+
+    mixins = [];
+
+    data = {
+      updateIcon: false,
+      userInfo: {},
+      navbar: ['首页', '好友'],
+      currentTab: 0,
+      iconPath: common.icon_path,
+      page: 1,
+      articleList: [
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggg啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿llllllllllllllllllllllllllllllllllll绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp绿绿绿gg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        }
+      ],
+      userList: [],
+      showDataList: []
+    };
+
+    computed = {};
+
+    methods = {
+      navbarTap(e) {
+        var tab = e.currentTarget.dataset.idx;
+        this.currentTab = tab;
+
+        if (tab === 0) {
+
+        } else if (tab === 1) {
+
+        }
+        this.updateIcon = false;
+        this.$apply();
+      },
+      turnToSearch() {
+        wepy.navigateTo({
+          url: pagePath.PAGE_INDEX_SEARCH
+        });
+      },
+      turnToSet() {
+        wepy.navigateTo({
+          url: pagePath.PAGE_INDEX_SET
+        });
+      },
+      turnPublish() {
+
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+    onShow() {
+
+    }
+
+    onReachBottom() {
+      this.page = this.page + 1;
+      this.updateIcon = true;
+      this.$apply();
+      this.requestData();
+    }
+
+    requestData() {
+
+    }
+
+  }
+</script>

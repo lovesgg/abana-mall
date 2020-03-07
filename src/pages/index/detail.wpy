@@ -1,0 +1,106 @@
+<style lang="less">
+  page {
+    background-color: #F8F9F9;
+  }
+  .article-num {
+    padding: 70rpx;
+  }
+  .article-num image {
+    width: 30rpx;
+    height: 30rpx;
+  }
+</style>
+<template>
+  <view @tap="turnToUserInfo()" class="column center" style="width: 755rpx;height: 250rpx;background-color: #2d8cf0;">
+    <image src="{{iconPath}}octocat.png" style="width: 60rpx;height: 60rpx;"></image>
+    <text style="color: #ffffff;">你的名字</text>
+  </view>
+
+
+  <view class="center" style="margin-top: -50rpx;">
+    <view class="space-b align-c font-30" style="width: 720rpx;background-color: #ffffff;border-radius: 15rpx;">
+      <view class="row align-c article-num">
+        <image src="{{iconPath}}shoucang-2.png"></image>
+        <text class="ml-15">{{article.like_num}}</text>
+      </view>
+      <view class="row align-c article-num">
+        <image src="{{iconPath}}share-2.png"></image>
+        <text class="ml-15">{{article.share_num}}</text>
+      </view>
+      <view class="row align-c article-num">
+        <image src="{{iconPath}}evaluate-2.png"></image>
+        <text class="ml-15">{{article.evaluate_num}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="center mt-30">
+    <view class="font-35 pd-25" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
+     哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或或或或或或或或或
+    </view>
+  </view>
+
+  <view class="center mt-60">
+    <view class="font-35 pd-25" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
+      评论列表
+
+      暂无评论
+    </view>
+  </view>
+
+  <image style="position: fixed;bottom: 60rpx;right: 30rpx;width: 70rpx;height: 70rpx;" src="{{iconPath}}evaluate.png"></image>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import pagePath from '../../resource/common/paths';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
+  import article from '../../components/article-list';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '详情',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      iconPath: common.icon_path,
+      ossPath: common.imgs_path,
+      article: {
+        'title': 'hh紧急解决军顶顶顶顶',
+        'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
+        'like_num': 2,
+        'share_num': 10,
+        'evaluate_num': 100
+      }
+    };
+
+    computed = {};
+
+    methods = {
+      turnToUserInfo(id) {
+        wepy.navigateTo({
+          url: pagePath.PAGE_USER_INFO_LIST + '?id=' + id
+        });
+      }
+    };
+
+    events = {};
+
+    onLoad(option) {
+      console.log(option);
+    }
+
+
+  }
+</script>

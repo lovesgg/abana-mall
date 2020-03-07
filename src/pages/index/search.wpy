@@ -1,0 +1,38 @@
+<style lang="less">
+
+</style>
+<template>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '搜索',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      userInfo: {}
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+
+  }
+</script>

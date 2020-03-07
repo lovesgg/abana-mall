@@ -1,0 +1,141 @@
+<style lang="less">
+  page {
+    background-color: #F8F9F9;
+  }
+  .article-num {
+    padding: 70rpx;
+  }
+  .article-num image {
+    width: 30rpx;
+    height: 30rpx;
+  }
+</style>
+<template>
+  <view class="column center" style="width: 755rpx;height: 250rpx;background-color: #2d8cf0;">
+    <image src="{{iconPath}}octocat.png" style="width: 60rpx;height: 60rpx;"></image>
+    <text style="color: #ffffff;">你的名字</text>
+  </view>
+
+
+  <view class="center" style="margin-top: -50rpx;">
+    <view class="space-b align-c font-30" style="width: 720rpx;background-color: #ffffff;border-radius: 15rpx;">
+      <view class="column center article-num">
+        <text>{{article.like_num}}</text>
+        <text>动态</text>
+      </view>
+      <view class="column center article-num">
+        <text>{{article.share_num}}</text>
+        <text>粉丝</text>
+      </view>
+      <view class="column center article-num">
+        <text>{{article.evaluate_num}}</text>
+        <text>获赞</text>
+      </view>
+    </view>
+  </view>
+
+  <repeat for="{{articleList}}" item="item" index="index">
+    <article :article.sync="item"></article>
+  </repeat>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import pagePath from '../../resource/common/paths';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
+  import article from '../../components/article-list';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '全部',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {
+      article: article
+    };
+
+    mixins = [];
+
+    data = {
+      iconPath: common.icon_path,
+      ossPath: common.imgs_path,
+      article: {
+        'title': 'hh紧急解决军顶顶顶顶',
+        'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
+        'like_num': 2,
+        'share_num': 10,
+        'evaluate_num': 100
+      },
+      articleList: [
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggg啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿llllllllllllllllllllllllllllllllllll绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp绿绿绿gg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        },
+        {
+          'title': 'hh紧急解决军顶顶顶顶',
+          'detail': 'ggggggg',
+          'like_num': 2,
+          'share_num': 10,
+          'evaluate_num': 100
+        }
+      ]
+    };
+
+    computed = {};
+
+    methods = {};
+
+    events = {};
+
+    onLoad(option) {
+      console.log(option);
+    }
+
+
+  }
+</script>
