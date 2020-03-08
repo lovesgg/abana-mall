@@ -297,95 +297,97 @@
 </style>
 
 <script>
-import wepy from 'wepy'
-import 'wepy-async-function'
-import api from './resource/api/api-logined'
-import urls from './resource/common/urls'
-import pagePath from './resource/common/paths';
-import common from './resource/common/common';
-import methods from './resource/common/methods';
-import request from './resource/api/request'
+  import wepy from 'wepy';
+  import 'wepy-async-function';
+  import api from './resource/api/api-logined';
+  import urls from './resource/common/urls';
+  import pagePath from './resource/common/paths';
+  import common from './resource/common/common';
+  import methods from './resource/common/methods';
+  import request from './resource/api/request';
 
-export default class extends wepy.app {
-  config = {
-    pages: [
-      'pages/index/index',
-      'pages/index/search',
-      'pages/index/set',
-      'pages/index/detail',
-
-
-      'pages/activity/index',
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index/index',
+        'pages/index/search',
+        'pages/index/set',
+        'pages/index/detail',
+        'pages/index/publish',
 
 
-      'pages/user/index',
-      'pages/user/info-list'
+        'pages/activity/index',
 
 
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
-    },
-    tabBar: {
-      'color': '#8a8a8a',
-      'selectedColor': '#2d8cf0',
-      'borderStyle': 'white',
-      'backgroundColor': '#ffffff',
-      'list': [
-        {
-          'iconPath': '/resource/icon/activity_grey.png',
-          'selectedIconPath': './resource/icon/activity.png',
-          'pagePath': 'pages/index/index',
-          'text': '动态'
-        },
-        {
-          'iconPath': '/resource/icon/tab_news.png',
-          'selectedIconPath': './resource/icon/tab_news_s.png',
-          'pagePath': 'pages/activity/index',
-          'text': '活动'
-        },
-        {
-          'iconPath': '/resource/icon/logo_grey.png',
-          'selectedIconPath': './resource/icon/logo.png',
-          'pagePath': 'pages/user/index',
-          'text': '我的'
-        }
-      ]
+        'pages/user/index',
+        'pages/user/info-list',
+        'pages/user/login'
+
+
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      },
+      tabBar: {
+        'color': '#8a8a8a',
+        'selectedColor': '#2d8cf0',
+        'borderStyle': 'white',
+        'backgroundColor': '#ffffff',
+        'list': [
+          {
+            'iconPath': '/resource/icon/activity_grey.png',
+            'selectedIconPath': './resource/icon/activity.png',
+            'pagePath': 'pages/index/index',
+            'text': '动态'
+          },
+          {
+            'iconPath': '/resource/icon/tab_news.png',
+            'selectedIconPath': './resource/icon/tab_news_s.png',
+            'pagePath': 'pages/activity/index',
+            'text': '活动'
+          },
+          {
+            'iconPath': '/resource/icon/logo_grey.png',
+            'selectedIconPath': './resource/icon/logo.png',
+            'pagePath': 'pages/user/index',
+            'text': '我的'
+          }
+        ]
+      }
+    };
+
+    globalData = {
+      userInfo: null
+    };
+
+
+    onLaunch() {
+
     }
-  };
 
-  globalData = {
-    userInfo: null
-  };
+    onShow() {
+      this.checkUserInfo();
+    }
 
-
-  onLaunch() {
-
-  }
-
-  onShow() {
-    this.checkUserInfo();
-  }
-
-  //设置token 用于登录
-  checkUserInfo() {
-    const that = this;
-    methods.getStorage(common.TOKEN, function(data) {
-      //console.log(data)
-      //已经有用户数据
-    }, function(err) {
-      //没有用户数据
-      methods.wxLogin(function(data) {
-        if (data.data != undefined && data.data != null) {
-          methods.setStorage(common.TOKEN, data.data);
-        }
-      }, function() {
-        methods.showToast('授权失败');
+    //设置token 用于登录
+    checkUserInfo() {
+      const that = this;
+      methods.getStorage(common.TOKEN, function(data) {
+        //console.log(data)
+        //已经有用户数据
+      }, function(err) {
+        //没有用户数据
+        methods.wxLogin(function(data) {
+          if (data.data != undefined && data.data != null) {
+            methods.setStorage(common.TOKEN, data.data);
+          }
+        }, function() {
+          methods.showToast('授权失败');
+        });
       });
-    });
+    }
   }
-}
 </script>

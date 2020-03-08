@@ -66,64 +66,10 @@
     data = {
       iconPath: common.icon_path,
       ossPath: common.imgs_path,
-      article: {
-        'title': 'hh紧急解决军顶顶顶顶',
-        'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
-        'like_num': 2,
-        'share_num': 10,
-        'evaluate_num': 100
-      },
-      articleList: [
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggg啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿llllllllllllllllllllllllllllllllllll绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp绿绿绿gg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        }
-      ]
+      article: [],
+      articleList: [],
+      page: 1,
+      userId: 0
     };
 
     computed = {};
@@ -133,7 +79,33 @@
     events = {};
 
     onLoad(option) {
+
       console.log(option);
+      this.requestData(option.user_id);
+    }
+
+    onReachBottom() {
+      this.page = this.page + 1;
+      this.$apply();
+      this.requestData(this.userId);
+    }
+
+    requestData(userId) {
+      var params = {
+        'page': this.page,
+        'user_id': parseInt(userId)
+      };
+      var self = this;
+      api.post(urls.article_article_user_list, params, function(res) {
+        if (res.ret == 1 && res.data.list.length != 0) {
+          self.articleList = self.articleList.concat(res.data.list);
+        } else {
+
+        }
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
     }
 
 

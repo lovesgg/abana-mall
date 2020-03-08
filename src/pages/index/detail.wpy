@@ -12,8 +12,8 @@
 </style>
 <template>
   <view @tap="turnToUserInfo()" class="column center" style="width: 755rpx;height: 250rpx;background-color: #2d8cf0;">
-    <image src="{{iconPath}}octocat.png" style="width: 60rpx;height: 60rpx;"></image>
-    <text style="color: #ffffff;">你的名字</text>
+    <image src="{{article.avatar}}" style="width: 100rpx;height: 100rpx;border-radius: 100rpx;"></image>
+    <text style="color: #ffffff;">{{article.nick_name}}</text>
   </view>
 
 
@@ -35,16 +35,15 @@
   </view>
 
   <view class="center mt-30">
-    <view class="font-35 pd-25" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
-     哈哈哈哈哈哈哈哈哈哈或或或或或或或或或或或或或或或或或或
+    <view class=" pd-25 column" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
+      <view class="font-35" style="border-bottom: 1rpx solid #F8F9F9;font-weight: bolder;padding-bottom: 20rpx;">{{article.title}}</view>
+      <view class="mt-20 font-30" style="min-height: 200rpx;">{{article.content}}</view>
     </view>
   </view>
 
   <view class="center mt-60">
-    <view class="font-35 pd-25" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
+    <view class="font-35 " style="width: 650rpx;border-bottom: 1rpx solid #2d8cf0;">
       评论列表
-
-      暂无评论
     </view>
   </view>
 
@@ -76,21 +75,16 @@
     data = {
       iconPath: common.icon_path,
       ossPath: common.imgs_path,
-      article: {
-        'title': 'hh紧急解决军顶顶顶顶',
-        'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
-        'like_num': 2,
-        'share_num': 10,
-        'evaluate_num': 100
-      }
+      article: {},
+      id: 0
     };
 
     computed = {};
 
     methods = {
-      turnToUserInfo(id) {
+      turnToUserInfo() {
         wepy.navigateTo({
-          url: pagePath.PAGE_USER_INFO_LIST + '?id=' + id
+          url: pagePath.PAGE_USER_INFO_LIST + '?user_id=' + this.article.user_id
         });
       }
     };
@@ -98,7 +92,25 @@
     events = {};
 
     onLoad(option) {
+      this.id = option.id;
+      this.$apply();
       console.log(option);
+      this.requestData();
+    }
+
+    requestData() {
+      var params = {
+        'id': parseInt(this.id)
+      };
+      var self = this;
+      request.post(common.IP + urls.article_article_detail, params, function(res) {
+        if (res.ret == 1) {
+          self.article = res.data;
+        }
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
     }
 
 

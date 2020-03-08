@@ -140,7 +140,7 @@ function getOpenid(func) {
 function showToast(title) {
   wepy.showToast({
     title: title,
-    image: common.icon_path + 'toast_icon.png',
+    image: common.icon_path + 'logo.png',
     duration: 3000
   });
 }

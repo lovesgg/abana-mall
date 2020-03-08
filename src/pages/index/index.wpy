@@ -28,6 +28,64 @@
     height: 4rpx;
     background: #2d8cf0;
   }
+
+  /*单元行*/
+  .row-user {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 10 10rpx;
+    border-bottom: 1px solid #e8e8e8;
+    background-color: #ffffff;
+  }
+
+  /*头像*/
+  .row-user image {
+    width: 100rpx;
+    height: 100rpx;
+    border-radius: 50rpx;
+    margin: 20rpx;
+  }
+
+  /*主体*/
+  .content-user {
+    display: flex;
+    flex-direction: column;
+    width: 76%;
+    padding-left: 20rpx;
+  }
+
+  /*昵称与日期*/
+  .top-user, .bottom-user {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  /*昵称*/
+  .nickname-user {
+    color: #4d4d4d;
+    font-size: 36rpx;
+  }
+
+  /*日期*/
+  .datetime-user {
+    padding: 10rpx;
+    font-size: 26rpx;
+    color: #b2b2b2;
+  }
+
+  /*话语*/
+  .sentence-user {
+    color: #ccc;
+    font-size: 28rpx;
+    margin-top: 6rpx;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 </style>
 <template>
   <!--导航条-->
@@ -58,7 +116,20 @@
 
   <!--用户列表-->
   <view hidden="{{currentTab!==1}}">
-
+    <view class="row-user mt-15" wx:for="{{userList}}" wx:key="" @tap="turnToUserInfo('{{item.user_id}}')" data-id="{{item.id}}">
+      <!-- 头像 -->
+      <image src="{{item.avatar_url}}" />
+      <!-- 名称与语句 -->
+      <view class="content-user">
+        <view class="top-user">
+          <view class="nickname-user">{{item.nick_name}}</view>
+          <view class="datetime-user">{{item.register_time}}</view>
+        </view>
+        <view class="bottom-user">
+          <view class="sentence-user">{{item.gender}}</view>
+        </view>
+      </view>
+    </view>
   </view>
 
   <view wx:if="{{updateIcon == true}}" class="center pd-50">
@@ -98,57 +169,8 @@
       currentTab: 0,
       iconPath: common.icon_path,
       page: 1,
-      articleList: [
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggg男男女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女女hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh女女女女女女女女女女女gg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggg啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿llllllllllllllllllllllllllllllllllll绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿绿啦啦啦啦啦啦啦啦绿绿ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp绿绿绿gg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        },
-        {
-          'title': 'hh紧急解决军顶顶顶顶',
-          'detail': 'ggggggg',
-          'like_num': 2,
-          'share_num': 10,
-          'evaluate_num': 100
-        }
-      ],
+      userPage: 1,
+      articleList: [],
       userList: [],
       showDataList: []
     };
@@ -160,10 +182,15 @@
         var tab = e.currentTarget.dataset.idx;
         this.currentTab = tab;
 
+        //数据为空时才会请求
         if (tab === 0) {
-
+          if (this.articleList.length == 0) {
+            this.requestData();
+          }
         } else if (tab === 1) {
-
+          if (this.userList.length == 0) {
+            this.requestUser();
+          }
         }
         this.updateIcon = false;
         this.$apply();
@@ -179,14 +206,32 @@
         });
       },
       turnPublish() {
-
+        methods.getStorage(common.TOKEN, function(res) {
+          if (res.nick_name == '') {
+            //需要用户授权个人信息
+            wepy.navigateTo({
+              url: pagePath.PAGE_USER_LOGIN
+            });
+          }
+          ;
+          wepy.navigateTo({
+            url: pagePath.PAGE_INDEX_PUBLISH
+          });
+        }, function(err) {
+          console.log(err);
+        });
+      },
+      turnToUserInfo(user_id) {
+        wepy.navigateTo({
+          url: pagePath.PAGE_USER_INFO_LIST + '?user_id=' + user_id
+        });
       }
     };
 
     events = {};
 
     onLoad() {
-
+      this.requestData();
     }
 
     onShow() {
@@ -194,14 +239,49 @@
     }
 
     onReachBottom() {
-      this.page = this.page + 1;
+      if (this.currentTab === 0) {
+        this.page = this.page + 1;
+        this.requestData();
+      } else if (this.currentTab === 1) {
+        this.userPage = this.userPage + 1;
+        this.requestUser();
+      }
       this.updateIcon = true;
       this.$apply();
-      this.requestData();
     }
 
     requestData() {
+      var params = {
+        'page': this.page
+      };
+      var self = this;
+      request.post(common.IP + urls.article_article_list, params, function(res) {
+        if (res.ret == 1 && res.data.list.length != 0) {
+          self.articleList = self.articleList.concat(res.data.list);
+        } else {
 
+        }
+        self.updateIcon = false;
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
+    }
+
+    requestUser() {
+      var params = {
+        'page': this.userPage
+      };
+      var self = this;
+      api.post(urls.user_near_list, params, function(res) {
+        if (res.ret == 1 && res.data.length != 0) {
+          self.userList = self.userList.concat(res.data);
+        }
+        self.updateIcon = false;
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
     }
 
   }

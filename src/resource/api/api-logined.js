@@ -25,18 +25,16 @@ const post = (url, params, succ, fail) => {
       url: common.IP + url,
       data: params,
       header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'content-type': 'application/json',
         'token': token.token,
         'open_id': token.open_id,
+        'avatar': token.avatar,
+        'nick_name': "",
       },
       method: 'post',
       success(res) {
         if (res.statusCode === 200) {
-          if (res.data.data === 10003) {
-            //远程token过期 //获取open_id放入缓存即可
-          } else {
-            succ(res.data);
-          }
+          succ(res.data);
         } else {
           fail(res);
         }
@@ -57,18 +55,16 @@ const get = (url, params, succ, fail) => {
       url: common.IP + url,
       data: params,
       header: {
-        'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'content-type': 'application/json',
         'token': token.token,
         'open_id': token.open_id,
+        'avatar': token.avatar,
+        'nick_name': "",
       },
       method: 'get',
       success(res) {
         if (res.statusCode === 200) {
-          if (res.data.data === 10003) {
-            //远程token过期 //获取open_id放入缓存即可
-          } else {
-            succ(res.data);
-          }
+          succ(res.data);
         } else {
           fail(res);
         }

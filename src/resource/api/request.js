@@ -8,7 +8,7 @@ const post = (url, params, succ, fail) => {
     url: url,
     data: params,
     header: {
-      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      'content-type': 'application/json',
     },
     method: 'post',
     success(res) {
@@ -30,7 +30,7 @@ const get = (url, params, succ, fail) => {
     url: url,
     data: params,
     header: {
-      'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+      'content-type': 'application/json',
     },
     method: 'get',
     success(res) {

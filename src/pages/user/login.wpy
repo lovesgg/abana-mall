@@ -1,0 +1,104 @@
+<style lang="less">
+
+</style>
+<template>
+
+  <view style="width: 100%;height: 100%;margin-top: 200rpx;" class="center column">
+    <image src="{{iconPath}}logo.png" style="width: 100rpx;height: 100rpx;"></image>
+    <button style="width: 400rpx;margin-top: 70rpx;background-color: #2d8cf0;color: #ffffff;"  open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo">
+      微信授权个人信息
+    </button>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import paths from '../../resource/common/paths';
+  import urls from '../../resource/common/urls';
+  import request from '../../resource/api/request';
+  import api from '../../resource/api/api-logined';
+  import commonMethods from '../../resource/common/methods';
+
+
+  export default class Login extends wepy.page {
+    config = {
+      navigationBarTitleText: '授权登录',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+
+    data = {
+      iconPath: common.icon_path,
+      userInfo: {}
+
+    };
+
+    computed = {};
+
+    methods = {
+      bindGetUserInfo(e) {
+        var self = this;
+        if (e.detail.userInfo != undefined) {
+          var user = e.detail.userInfo;
+          console.log(user);
+          var params = {
+            'nick_name': user.nickName,
+            'avatar_url': user.avatarUrl,
+            'province': user.province,
+            'city': user.city,
+            'gender': user.gender
+          };
+
+          api.post(urls.user_user_update, params, function(res) {
+            if (res.ret == 1) {
+              self.userInfo.nick_name = user.nickName;
+              self.userInfo.avatar_url = user.avatarUrl;
+
+              methods.setStorage(common.TOKEN, self.userInfo);
+              methods.showToast('授权成功');
+              wepy.navigateBack({
+                delta: 1
+              });
+            } else {
+              //methods.showToast("授权失败")
+              wepy.navigateBack({
+                delta: 1
+              });
+            }
+          }, function(err) {
+            console.log(err);
+          });
+
+        } else {
+          //用户拒绝
+          wepy.navigateBack({
+            delta: 1
+          });
+        }
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+    onShow() {
+      var self = this;
+      methods.getStorage(common.TOKEN, function(res) {
+        self.userInfo = res;
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
+    }
+
+  }
+</script>

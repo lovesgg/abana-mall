@@ -1,12 +1,77 @@
 <style lang="less">
+  .search {
+    height: 124rpx;
+    background-color: #F7F7F7;
+    display: flex;
+    justify-content: center;
+    border-bottom: 0.5rpx solid #2d8cf0;
+    .search-container {
+      margin-top: 30rpx;
+      height: 64rpx;
+      // border:1px solid red;
+      margin-left:22rpx;
+      margin-right:33rpx;
+      width: 695rpx;
+      display: flex;
+
+      .search-left {
+        display: flex;
+        background-color: #FFFFFF;
+        border-radius: 32rpx;
+        .search-input  {
+          // border:1px solid blue;
+          height: 64rpx;
+          line-height: 64rpx;
+          font-size: 28rpx;
+          width: 500rpx;
+        }
+        .search-image {
+          width:34rpx;
+          height: 34rpx;
+          margin-left: 30rpx;
+          margin-top:15rpx;
+          margin-right: 15rpx;
+        }
+      }
+
+      .search-btn {
+        font-size: 32rpx;
+        line-height: 64rpx;
+        font-weight: bold;
+        color:#313131;
+        text-align: center;
+        margin-left:30rpx;
+      }
+    }
+  }
 
 </style>
 <template>
+  <view class="search">
+    <view class="search-container">
+      <view class="search-left">
+        <image class="search-image" src="{{iconPath}}search.png" />
+        <input class="search-input" maxlength="10" placeholder="请输入关键词" bindinput='watchSearch'/>
+      </view>
+      <view class="search-btn" data-keywords="{{keywords}}" @tap="goSearch()">搜索</view>
+    </view>
+  </view>
+
+  <repeat for="{{articleList}}" item="item" index="index">
+    <article :article.sync="item"></article>
+  </repeat>
 
 </template>
 
 <script>
   import wepy from 'wepy';
+  import pagePath from '../../resource/common/paths';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
+  import article from '../../components/article-list';
 
 
   export default class Index extends wepy.page {
@@ -15,17 +80,49 @@
       navigationBarBackgroundColor: '#2d8cf0',
       navigationBarTextStyle: 'white'
     };
-    components = {};
+    components = {
+      article: article
+    };
 
     mixins = [];
 
     data = {
-      userInfo: {}
+      userInfo: {},
+      iconPath: common.icon_path,
+      text: '',
+      articleList: []
     };
 
     computed = {};
 
-    methods = {};
+    methods = {
+      watchSearch(e) {
+        var text = e.detail.value;
+        this.text = text;
+        this.$apply();
+      },
+      goSearch() {
+        var text = this.text;
+        if (text == '') {
+          methods.showToast('输入搜索词');
+          return false;
+        }
+        var params = {
+          'text': text
+        };
+        var self = this;
+        api.post(urls.article_article_search, params, function(res) {
+          if (res.ret == 1 && res.data.length > 0) {
+            self.articleList = res.data;
+          } else {
+            methods.showToast('搜索结果为空');
+          }
+          self.$apply();
+        }, function(err) {
+          console.log(err);
+        });
+      }
+    };
 
     events = {};
 

@@ -1,0 +1,139 @@
+<style lang="less">
+
+  .contentNumStyle {
+    justify-content: flex-end;
+    padding: 2%;
+    font-size: 14px;
+    color: #c0c6d3;
+    width: 700rpx;
+    border-top: 1px solid #ddd;
+  }
+
+  .textarea-Style {
+    /*border: 1px solid #ddd;*/
+    border-radius: 5px;
+    font-size: 15px;
+    color: #33496d;
+    width: 700rpx;
+  }
+  .title {
+    border-bottom: 2px solid #2d8cf0;
+    width: 680rpx;
+    padding: 10rpx;
+  }
+  .text-content {
+    width: 680rpx;
+    height: 500rpx;
+
+  }
+</style>
+<template>
+
+  <view class="center mt-60 column">
+
+    <view>
+      <input class="title" type="text" maxlength="20" placeholder="输入标题" bindinput="titleChange"/>
+    </view>
+
+    <view class='textarea-Style center mt-30 column'>
+      <textarea class="text-content pd-25" placeholder='输入内容' value='{{contentStr}}' bindinput="getWords" maxlength='{{maxTextLen}}'></textarea>
+      <view class='contentNumStyle center'>{{textLen}}/{{maxTextLen}}</view>
+    </view>
+
+    <view class="center mt-30">
+      <image src="{{iconPath}}publish-btn.png" style="width: 80rpx;height: 80rpx;" @tap="publish()"></image>
+    </view>
+  </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import api from '../../resource/api/api-logined';
+  import urls from '../../resource/common/urls';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '发布',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      userInfo: {},
+      maxTextLen: 200,
+      textLen: 0,
+      contentStr: '',
+      iconPath: common.icon_path,
+      titleStr: ''
+    };
+
+    computed = {};
+
+    methods = {
+      getWords(e) {
+        let page = this;
+        // 设置最大字符串长度(为-1时,则不限制)
+        let maxTextLen = this.maxTextLen;
+        // 文本长度
+        let textLen = e.detail.value.length;
+        this.maxTextLen = maxTextLen;
+        this.textLen = textLen;
+        this.contentStr = e.detail.value;
+        this.$apply();
+      },
+      titleChange(e) {
+        this.titleStr = e.detail.value;
+        //console.log(e.detail.value)
+        this.$apply();
+      },
+      publish() {
+        var title = this.titleStr;
+        var content = this.contentStr;
+
+        if (title == '') {
+          methods.showToast('标题不能为空');
+          return false;
+        } else if (content == '') {
+          methods.showToast('内容不能为空');
+          return false;
+        }
+
+        var self = this;
+        var params = {
+          'title': title,
+          'content': content
+        };
+        api.post(urls.article_article_publish, params, function(res) {
+          if (res.ret == 1) {
+            methods.showToast('发布成功');
+            setTimeout(function() {
+              wepy.navigateBack({
+                delta: 1
+              });
+            }, 2000);
+          } else {
+            methods.showToast('发布失败');
+          }
+        }, function(err) {
+          methods.showToast('发布失败');
+        });
+
+      }
+    };
+
+    events = {};
+
+    onLoad() {
+
+    }
+
+
+  }
+</script>
