@@ -314,6 +314,7 @@
         'pages/index/set',
         'pages/index/detail',
         'pages/index/publish',
+        'pages/index/evaluate',
 
 
         'pages/activity/index',

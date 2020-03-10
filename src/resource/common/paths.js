@@ -9,6 +9,7 @@ const PAGE_INDEX_SEARCH = "/pages/index/search"
 const PAGE_INDEX_SET = "/pages/index/set"
 const PAGE_INDEX_DETAIL = "/pages/index/detail"
 const PAGE_INDEX_PUBLISH = "/pages/index/publish"
+const PAGE_INDEX_EVALUATE = "/pages/index/evaluate"
 
 
 /**
@@ -30,6 +31,7 @@ module.exports = {
   PAGE_INDEX_DETAIL: PAGE_INDEX_DETAIL,
   PAGE_USER_INFO_LIST: PAGE_USER_INFO_LIST,
   PAGE_INDEX_PUBLISH: PAGE_INDEX_PUBLISH,
+  PAGE_INDEX_EVALUATE: PAGE_INDEX_EVALUATE,
 
 
 }

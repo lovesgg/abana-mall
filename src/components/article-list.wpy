@@ -1,6 +1,7 @@
 <style lang='less'>
   .article-num {
     padding: 15rpx;
+    width: 200rpx;
   }
   .article-num image {
     width: 30rpx;
@@ -17,7 +18,7 @@
   <view class="pl-20 pr-20 pt-10 pd-10 center;" style="background-color: #F8F9F9;">
     <view @tap="turnDetail('{{article.id}}')" class="pd-15 column article-item" style="width: 700rpx;border-radius: 15rpx;max-height: 320rpx;background-color: white;">
       <view class="row align-c">
-        <view class="align-c">
+        <view class="align-c" @tap.stop="turnToUser('{{article.user_id}}')">
           <image src="{{article.avatar}}" style="width: 60rpx;height: 60rpx;border-radius: 60rpx;"></image>
         </view>
         <view class="ml-30 align-c font-35">
@@ -28,15 +29,15 @@
         {{article.content}}
       </view>
       <view class="space-b align-c font-30">
-        <view class="row align-c article-num">
-          <image src="{{iconPath}}shoucang-2.png"></image>
-          <text class="ml-15">{{article.like_num}}</text>
-        </view>
-        <view class="row align-c article-num">
+        <view class="row align-c center article-num">
           <image src="{{iconPath}}share-2.png"></image>
           <text class="ml-15">{{article.share_num}}</text>
         </view>
-        <view class="row align-c article-num">
+        <view class="row align-c center article-num" @tap.stop="addLike('{{article.id}}', '{{article.user_id}}')">
+          <image src="{{iconPath}}shoucang-2.png"></image>
+          <text class="ml-15">{{article.like_num}}</text>
+        </view>
+        <view class="row align-c center article-num" >
           <image src="{{iconPath}}evaluate-2.png"></image>
           <text class="ml-15">{{article.evaluate_num}}</text>
         </view>
@@ -56,6 +57,7 @@
   import urls from '../resource/common/urls';
   import request from '../resource/api/request';
   import api from '../resource/api/api-logined';
+  import pagePath from '../resource/common/paths';
 
 
   export default class List extends wepy.component {
@@ -76,6 +78,46 @@
       turnDetail(id) {
         wepy.navigateTo({
           url: paths.PAGE_INDEX_DETAIL + '?id=' + id
+        });
+      },
+      turnToUser(user_id) {
+        wepy.navigateTo({
+          url: pagePath.PAGE_USER_INFO_LIST + '?user_id=' + user_id
+        });
+      },
+      turnEvaluate(id) {
+        var self = this;
+        methods.getStorage(common.TOKEN, function(res) {
+          if (res.nick_name == '') {
+            //需要用户授权个人信息
+            wepy.navigateTo({
+              url: pagePath.PAGE_USER_LOGIN
+            });
+          }
+          ;
+          wepy.navigateTo({
+            url: pagePath.PAGE_INDEX_EVALUATE + '?id=' + id
+          });
+        }, function(err) {
+          console.log(err);
+        });
+      },
+      addLike(id, user_id) {
+        var params = {
+          'article_id': parseInt(id),
+          'user_id': parseInt(user_id)
+        };
+        var self = this;
+        api.post(urls.article_article_add_like, params, function(res) {
+          if (res.ret == 1) {
+            methods.showToast('收藏成功');
+          } else {
+            methods.showToast(res.error_msg);
+          }
+          self.$apply();
+        }, function(err) {
+          methods.showToast(res.error_msg);
+          console.log(err);
         });
       }
     };

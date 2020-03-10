@@ -183,7 +183,7 @@
         <view class="center_down space-b">
           <view class="center_rank align-c" @tap="toNone">
             <image class="rank_icon" src="{{iconPath}}like-user.png"></image>
-            <text class="rank_text">关注的人</text>
+            <text class="rank_text">我的关注</text>
           </view>
           <view class="center_score align-c" @tap="toNone">
             <image class="rank_icon" src="{{iconPath}}shoucang.png"></image>
@@ -237,6 +237,7 @@
       userInfo: {},
       iconPath: common.icon_path,
       menuitems: [
+        { text: '我的粉丝', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
         { text: '个人资料', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
         { text: '邀请好友', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },
         { text: '成长积分', url: '#', icon: '/resource/icon/tab_git.png', tips: '', arrows: '/resource/icon/arrows.png' },

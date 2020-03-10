@@ -12,24 +12,24 @@
 </style>
 <template>
   <view class="column center" style="width: 755rpx;height: 250rpx;background-color: #2d8cf0;">
-    <image src="{{iconPath}}octocat.png" style="width: 60rpx;height: 60rpx;"></image>
-    <text style="color: #ffffff;">你的名字</text>
+    <image src="{{userInfo.avatar_url}}" style="width: 80rpx;height: 80rpx;border-radius: 80rpx;"></image>
+    <text style="color: #ffffff;">{{userInfo.nick_name}}</text>
   </view>
 
 
   <view class="center" style="margin-top: -50rpx;">
     <view class="space-b align-c font-30" style="width: 720rpx;background-color: #ffffff;border-radius: 15rpx;">
       <view class="column center article-num">
-        <text>{{article.like_num}}</text>
+        <text>{{userInfo.article_num}}</text>
         <text>动态</text>
       </view>
       <view class="column center article-num">
-        <text>{{article.share_num}}</text>
+        <text>{{userInfo.fans_num}}</text>
         <text>粉丝</text>
       </view>
       <view class="column center article-num">
-        <text>{{article.evaluate_num}}</text>
-        <text>获赞</text>
+        <text>{{userInfo.like_article_num}}</text>
+        <text>收藏</text>
       </view>
     </view>
   </view>
@@ -69,7 +69,8 @@
       article: [],
       articleList: [],
       page: 1,
-      userId: 0
+      userId: 0,
+      userInfo: {}
     };
 
     computed = {};
@@ -79,8 +80,7 @@
     events = {};
 
     onLoad(option) {
-
-      console.log(option);
+      this.requestUser(option.user_id);
       this.requestData(option.user_id);
     }
 
@@ -88,6 +88,21 @@
       this.page = this.page + 1;
       this.$apply();
       this.requestData(this.userId);
+    }
+
+    requestUser(userId) {
+      var params = {
+        'user_id': parseInt(userId)
+      };
+      var self = this;
+      api.post(urls.user_get_info, params, function(res) {
+        if (res.ret == 1) {
+          self.userInfo = res.data;
+        }
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
     }
 
     requestData(userId) {

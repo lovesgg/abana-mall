@@ -136,7 +136,7 @@
     <image src="{{iconPath}}update.png" style="width: 50rpx;height: 50rpx;"></image>
   </view>
 
-  <image @tap.stop="turnPublish()" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
+  <image wx:if="{{isShowPublish}}" @tap.stop="turnPublish()" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
 
 </template>
 
@@ -165,14 +165,15 @@
     data = {
       updateIcon: false,
       userInfo: {},
-      navbar: ['首页', '好友'],
+      navbar: ['首页', '友人'],
       currentTab: 0,
       iconPath: common.icon_path,
       page: 1,
       userPage: 1,
       articleList: [],
       userList: [],
-      showDataList: []
+      showDataList: [],
+      isShowPublish: true
     };
 
     computed = {};
@@ -184,10 +185,12 @@
 
         //数据为空时才会请求
         if (tab === 0) {
+          this.isShowPublish = true;
           if (this.articleList.length == 0) {
             this.requestData();
           }
         } else if (tab === 1) {
+          this.isShowPublish = false;
           if (this.userList.length == 0) {
             this.requestUser();
           }
