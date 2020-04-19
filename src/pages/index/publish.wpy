@@ -71,7 +71,8 @@
       textLen: 0,
       contentStr: '',
       iconPath: common.icon_path,
-      titleStr: ''
+      titleStr: '',
+      publishType: '',
     };
 
     computed = {};
@@ -108,7 +109,8 @@
         var self = this;
         var params = {
           'title': title,
-          'content': content
+          'content': content,
+          'type': this.publishType,
         };
         api.post(urls.article_article_publish, params, function(res) {
           if (res.ret == 1) {
@@ -130,8 +132,9 @@
 
     events = {};
 
-    onLoad() {
-
+    onLoad(option) {
+      this.publishType = option.type
+      this.$apply()
     }
 
 

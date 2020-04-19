@@ -15,6 +15,10 @@ const article_article_detail = "/article/article/detail"
 const article_article_search = "/article/article/search"
 const article_article_add_like = "/article/article/add-like"
 
+//活动相关
+const activity_activity_list = "/activity/activity/list"
+const activity_activity_detail = "/activity/activity/detail"
+
 //评论相关
 const evaluate_evaluate_add = "/evaluate/evaluate/add"
 const evaluate_evaluate_list = "/evaluate/evaluate/list"
@@ -32,6 +36,8 @@ module.exports = {
   evaluate_evaluate_add: evaluate_evaluate_add,
   evaluate_evaluate_list: evaluate_evaluate_list,
   article_article_add_like: article_article_add_like,
+  activity_activity_list: activity_activity_list,
+  activity_activity_detail: activity_activity_detail,
 
 
 }

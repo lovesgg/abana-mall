@@ -1,0 +1,206 @@
+<style lang="less">
+  page {
+    background-color: #F8F9F9;
+  }
+  .article-num {
+    padding: 70rpx;
+  }
+  .article-num image {
+    width: 30rpx;
+    height: 30rpx;
+  }
+  .evaluate-detail {
+    word-wrap:break-word;
+    width: 530rpx;
+  }
+</style>
+<template>
+  <view @tap="turnToUserInfo()" class="column center" style="width: 755rpx;height: 250rpx;background-color: #2d8cf0;">
+    <image src="{{article.avatar}}" style="width: 100rpx;height: 100rpx;border-radius: 100rpx;"></image>
+    <text style="color: #ffffff;">{{article.nick_name}}</text>
+  </view>
+
+
+  <view class="center" style="margin-top: -50rpx;">
+    <view class="space-b align-c font-30" style="width: 720rpx;background-color: #ffffff;border-radius: 15rpx;">
+<!--      <view class="row align-c article-num">-->
+<!--        <image src="{{iconPath}}share-2.png"></image>-->
+<!--        <text class="ml-15">{{article.share_num}}</text>-->
+<!--      </view>-->
+<!--      <view class="row align-c article-num">-->
+<!--        <image src="{{iconPath}}evaluate-2.png"></image>-->
+<!--        <text class="ml-15">{{article.evaluate_num}}</text>-->
+<!--      </view>-->
+<!--      <view class="row align-c article-num" @tap.stop="addLike('{{article.id}}', '{{article.user_id}}')">-->
+<!--        <image src="{{iconPath}}shoucang-2.png"></image>-->
+<!--        <text class="ml-15">{{article.like_num}}</text>-->
+<!--      </view>-->
+    </view>
+  </view>
+
+  <view class="center mt-30">
+    <view class=" pd-25 column" style="width: 670rpx;background-color: #ffffff;border-radius: 15rpx;">
+      <view class="font-35" style="border-bottom: 1rpx solid #F8F9F9;font-weight: bolder;padding-bottom: 20rpx;">{{article.title}}</view>
+      <view class="mt-20 font-30" style="min-height: 200rpx;">{{article.content}}</view>
+    </view>
+  </view>
+
+  <view class="center column mt-60" style="min-height: 200rpx;background-color: #ffffff;">
+    <view class="font-35 align-c" style="width: 700rpx;border-bottom: 1rpx solid #2d8cf0;margin-bottom: 20rpx;height: 80rpx;">
+      评论
+    </view>
+
+    <view class="center mt-10" wx:if="{{evaluateList.length == 0}}">
+      暂无评论
+    </view>
+
+    <view class="row" style="width: 700rpx;padding-bottom: 15rpx;padding-top: 15rpx;min-height: 130rpx;border-bottom: 1rpx solid #F2F3F4;" wx:for="{{evaluateList}}" item="item">
+      <view @tap.stop="turnToUser('{{item.user_id}}')">
+        <image src="{{article.avatar}}" style="width: 80rpx;height: 80rpx;border-radius: 80rpx;"></image>
+      </view>
+      <view class="column ml-20">
+        <view style="font-weight: bold" @tap.stop="turnToUser('{{item.user_id}}')">你的名字</view>
+        <view class="mt-15 evaluate-detail">{{item.detail}}</view>
+        <view class="mt-15 font-25">{{item.c_t}}</view>
+      </view>
+    </view>
+  </view>
+  <view style="height: 200rpx;"></view>
+
+<!--  <image @tap="turnEvaluate()" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 70rpx;height: 70rpx;" src="{{iconPath}}evaluate.png"></image>-->
+
+</template>
+
+<script>
+  import wepy from 'wepy';
+  import pagePath from '../../resource/common/paths';
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
+  import article from '../../components/article-list';
+
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '详情',
+      navigationBarBackgroundColor: '#2d8cf0',
+      navigationBarTextStyle: 'white'
+    };
+    components = {};
+
+    mixins = [];
+
+    data = {
+      iconPath: common.icon_path,
+      ossPath: common.imgs_path,
+      article: {},
+      id: 0,
+      page: 1,
+      evaluateList: []
+    };
+
+    computed = {};
+
+    methods = {
+      turnToUserInfo() {
+        wepy.navigateTo({
+          url: pagePath.PAGE_USER_INFO_LIST + '?user_id=' + this.article.user_id
+        });
+      },
+      turnEvaluate() {
+        var self = this;
+        methods.getStorage(common.TOKEN, function(res) {
+          if (res.nick_name == '') {
+            //需要用户授权个人信息
+            wepy.navigateTo({
+              url: pagePath.PAGE_USER_LOGIN
+            });
+          }
+          ;
+          wepy.navigateTo({
+            url: pagePath.PAGE_INDEX_EVALUATE + '?id=' + self.id
+          });
+        }, function(err) {
+          console.log(err);
+        });
+      },
+      turnToUser(user_id) {
+        wepy.navigateTo({
+          url: pagePath.PAGE_USER_INFO_LIST + '?user_id=' + user_id
+        });
+      },
+      addLike(id, user_id) {
+        var params = {
+          'article_id': parseInt(id),
+          'user_id': parseInt(user_id)
+        };
+        var self = this;
+        api.post(urls.article_article_add_like, params, function(res) {
+          if (res.ret == 1) {
+            methods.showToast('收藏成功');
+          } else {
+            methods.showToast(res.error_msg);
+          }
+          self.$apply();
+        }, function(err) {
+          methods.showToast(res.error_msg);
+          console.log(err);
+        });
+      }
+    };
+
+    events = {};
+
+    onLoad(option) {
+      this.id = option.id;
+      this.$apply();
+      this.requestData();
+      this.requestEvaluate();
+    }
+
+    onShow() {
+
+    }
+
+    requestData() {
+      var params = {
+        'id': parseInt(this.id)
+      };
+      var self = this;
+      request.post(common.IP + urls.activity_activity_detail, params, function(res) {
+        if (res.ret == 1) {
+          self.article = res.data;
+        }
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
+    }
+
+    requestEvaluate() {
+      var params = {
+        'id': parseInt(this.id),
+        'page': this.page
+      };
+      var self = this;
+      request.post(common.IP + urls.evaluate_evaluate_list, params, function(res) {
+        if (res.ret == 1 && res.data.length != 0) {
+          self.evaluateList = self.evaluateList.concat(res.data);
+        }
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
+    }
+
+    onReachBottom() {
+      this.page = this.page + 1;
+      this.requestEvaluate();
+      this.$apply();
+    }
+
+
+  }
+</script>

@@ -3,11 +3,24 @@
 </style>
 <template>
 
+
+  <repeat for="{{articleList}}" item="item" index="index">
+    <activity :article.sync="item"></activity>
+  </repeat>
+
+  <image wx:if="{{isShowPublish}}" @tap.stop="turnPublish('activity')" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
 </template>
 
 <script>
   import wepy from 'wepy';
 
+  import common from '../../resource/common/common';
+  import methods from '../../resource/common/methods';
+  import pagePath from '../../resource/common/paths';
+  import activity from '../../components/activity-list';
+  import urls from '../../resource/common/urls';
+  import api from '../../resource/api/api-logined';
+  import request from '../../resource/api/request';
 
   export default class Index extends wepy.page {
     config = {
@@ -16,26 +29,78 @@
       navigationBarTextStyle: 'white',
       enablePullDownRefresh: true
     };
-    components = {};
+    components = {
+      activity: activity,
+    };
 
     mixins = [];
 
     data = {
-      userInfo: {}
+      isShowPublish: true,
+      iconPath: common.icon_path,
+      userInfo: {},
+      articleList: [],
+      page: 1,
+
     };
 
     computed = {};
 
-    methods = {};
+    methods = {
+      turnPublish(type) {
+        methods.getStorage(common.TOKEN, function(res) {
+          if (res.nick_name === '') {
+            //需要用户授权个人信息
+            wepy.navigateTo({
+              url: pagePath.PAGE_USER_LOGIN
+            });
+          }
+          ;
+          wepy.navigateTo({
+            url: pagePath.PAGE_INDEX_PUBLISH + "?type=" + type
+          });
+        }, function(err) {
+          console.log(err);
+        });
+      },
+    };
 
     events = {};
 
     onLoad() {
-
+      this.requestData();
     }
 
-    getUser() {
+    requestData() {
+      var params = {
+        'page': this.page
+      };
+      var self = this;
+      request.post(common.IP + urls.activity_activity_list, params, function(res) {
+        if (res.ret == 1 && res.data.list.length != 0) {
+          self.articleList = self.articleList.concat(res.data.list);
+        } else {
 
+        }
+        self.updateIcon = false;
+        self.$apply();
+      }, function(err) {
+        console.log(err);
+      });
+    }
+
+    onReachBottom() {
+      this.page = this.page + 1;
+      this.requestData();
+      this.$apply();
+    }
+
+    onPullDownRefresh() {
+      this.page = 1;
+      this.articleList = [];
+      this.$apply()
+      this.requestData();
+      this.$apply();
     }
   }
 </script>

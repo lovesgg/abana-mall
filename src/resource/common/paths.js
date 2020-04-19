@@ -20,6 +20,12 @@ const PAGE_USER_INDEX = "/pages/user/index"
 const PAGE_USER_LOGIN = "/pages/user/login"
 const PAGE_USER_INFO_LIST = "/pages/user/info-list"
 
+/**
+ *
+ * 活动相关
+ */
+const PAGE_ACTIVITY_DETAIL = "/pages/activity/detail"
+
 
 
 module.exports = {
@@ -32,6 +38,7 @@ module.exports = {
   PAGE_USER_INFO_LIST: PAGE_USER_INFO_LIST,
   PAGE_INDEX_PUBLISH: PAGE_INDEX_PUBLISH,
   PAGE_INDEX_EVALUATE: PAGE_INDEX_EVALUATE,
+  PAGE_ACTIVITY_DETAIL: PAGE_ACTIVITY_DETAIL,
 
 
 }

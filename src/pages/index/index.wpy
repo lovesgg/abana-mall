@@ -136,7 +136,7 @@
     <image src="{{iconPath}}update.png" style="width: 50rpx;height: 50rpx;"></image>
   </view>
 
-  <image wx:if="{{isShowPublish}}" @tap.stop="turnPublish()" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
+  <image wx:if="{{isShowPublish}}" @tap.stop="turnPublish('index')" style="position: fixed;bottom: 60rpx;right: 30rpx;width: 80rpx;height: 80rpx;" src="{{iconPath}}publish.png"></image>
 
 </template>
 
@@ -208,9 +208,9 @@
           url: pagePath.PAGE_INDEX_SET
         });
       },
-      turnPublish() {
+      turnPublish(type) {
         methods.getStorage(common.TOKEN, function(res) {
-          if (res.nick_name == '') {
+          if (res.nick_name === '') {
             //需要用户授权个人信息
             wepy.navigateTo({
               url: pagePath.PAGE_USER_LOGIN
@@ -218,7 +218,7 @@
           }
           ;
           wepy.navigateTo({
-            url: pagePath.PAGE_INDEX_PUBLISH
+            url: pagePath.PAGE_INDEX_PUBLISH + "?type=" + type
           });
         }, function(err) {
           console.log(err);
@@ -247,6 +247,22 @@
         this.requestData();
       } else if (this.currentTab === 1) {
         this.userPage = this.userPage + 1;
+        this.requestUser();
+      }
+      this.updateIcon = true;
+      this.$apply();
+    }
+
+    onPullDownRefresh() {
+      if (this.currentTab === 0) {
+        this.page = 1;
+        this.articleList = []
+        this.$apply()
+        this.requestData();
+      } else if (this.currentTab === 1) {
+        this.userPage = 1;
+        this.userList = [];
+        this.$apply();
         this.requestUser();
       }
       this.updateIcon = true;

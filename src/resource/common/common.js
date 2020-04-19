@@ -3,7 +3,7 @@ import wepy from 'wepy';
 const env = 'test'; //test,release stage
 var IP = '';
 if (env === 'test') {
-  IP = 'http://127.0.0.1:2195'; //本地环境
+  IP = 'http://127.0.0.1:2196'; //本地环境
 } else if (env === 'stage') {
   IP = ''; //stage环境
 } else {
